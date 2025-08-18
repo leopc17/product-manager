@@ -1,5 +1,6 @@
 package com.br.productmanager.model.entity;
 
+import com.br.productmanager.enums.ProductCategory;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -14,6 +15,9 @@ public class Product {
     private String name;
     private BigDecimal price;
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    private ProductCategory category;
 
     public UUID getId() {
         return id;
@@ -45,5 +49,13 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public ProductCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ProductCategory category) {
+        this.category = category;
     }
 }
