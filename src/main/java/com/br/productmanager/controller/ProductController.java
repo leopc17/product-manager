@@ -1,5 +1,7 @@
 package com.br.productmanager.controller;
 
+import com.br.productmanager.dto.ProductRequestDto;
+import com.br.productmanager.dto.ProductResponseDto;
 import com.br.productmanager.enums.ProductCategory;
 import com.br.productmanager.model.entity.Product;
 import com.br.productmanager.service.impl.ProductServiceImpl;
@@ -8,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,29 +26,60 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product product) {
-        return ResponseEntity.ok(productService.create(product));
+    public ResponseEntity<ProductResponseDto> create(@RequestBody ProductRequestDto product) {
+        Product productEntity = productService.create(new Product(product));
+
+        ProductResponseDto productResponse = ProductResponseDto.fromProduct(productEntity);
+
+        return ResponseEntity.ok(productResponse);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> find(@PathVariable UUID id) {
-        return ResponseEntity.ok(productService.findById(id));
+    public ResponseEntity<ProductResponseDto> find(@PathVariable UUID id) {
+        Product productEntity = productService.findById(id);
+
+        ProductResponseDto productResponse = ProductResponseDto.fromProduct(productEntity);
+
+        return ResponseEntity.ok(productResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> find() {
-        return ResponseEntity.ok(productService.findAll());
+    public ResponseEntity<List<ProductResponseDto>> find() {
+        List<Product> productsEntity = productService.findAll();
+
+        List<ProductResponseDto> productsResponse = new ArrayList<>();
+        for (Product p : productsEntity) {
+            ProductResponseDto pr = ProductResponseDto.fromProduct(p);
+            productsResponse.add(pr);
+        }
+
+        return ResponseEntity.ok(productsResponse);
     }
 
     @GetMapping("/categories/{category}")
-    public ResponseEntity<List<Product>> find(@PathVariable String category) {
+    public ResponseEntity<List<ProductResponseDto>> find(@PathVariable String category) {
         ProductCategory enumCategory = ProductCategory.valueOf(category.toUpperCase());
-        return ResponseEntity.ok(productService.findAllByCategory(enumCategory));
+        List<Product> productsEntity = productService.findAllByCategory(enumCategory);
+
+        List<ProductResponseDto> productsResponse = new ArrayList<>();
+        for (Product p : productsEntity) {
+            ProductResponseDto pr = ProductResponseDto.fromProduct(p);
+            productsResponse.add(pr);
+        }
+
+        return ResponseEntity.ok(productsResponse);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable UUID id, @RequestBody Product newProduct) {
-        return ResponseEntity.status(HttpStatus.OK).body(productService.update(id, newProduct));
+    public ResponseEntity<ProductResponseDto> update(@PathVariable UUID id, @RequestBody ProductRequestDto newProduct) {
+        Product newProductEntity = new Product(newProduct);
+        newProductEntity.setId(id);
+
+        Product productEntity = productService.update(id, newProductEntity);
+
+        ProductResponseDto productResponse = ProductResponseDto.fromProduct(productEntity);
+
+        return ResponseEntity.status(HttpStatus.OK).body(productResponse);
     }
 
     @DeleteMapping("/{id}")
