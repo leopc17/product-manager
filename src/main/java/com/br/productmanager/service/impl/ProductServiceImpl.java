@@ -58,7 +58,6 @@ public class ProductServiceImpl implements ProductService {
         }
 
         Product product = productOptional.get();
-        newProduct.setId(product.getId());
         BeanUtils.copyProperties(newProduct, product);
 
         return repository.save(product);
