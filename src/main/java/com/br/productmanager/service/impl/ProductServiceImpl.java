@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productOptional = repository.findById(id);
 
         if (productOptional.isEmpty()) {
-            throw new NoSuchElementException("id not found.");
+            throw new ProductNotFoundException("id not found");
         }
 
         return productOptional.get();
@@ -64,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productOptional = repository.findById(id);
 
         if (productOptional.isEmpty()) {
-            throw new NoSuchElementException("id not found.");
+            throw new ProductNotFoundException("id not found");
         }
 
         Product product = productOptional.get();
