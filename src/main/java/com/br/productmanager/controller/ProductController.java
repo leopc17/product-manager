@@ -5,6 +5,7 @@ import com.br.productmanager.dto.ProductResponseDto;
 import com.br.productmanager.enums.ProductCategory;
 import com.br.productmanager.model.entity.Product;
 import com.br.productmanager.service.impl.ProductServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> create(@RequestBody ProductRequestDto product) {
+    public ResponseEntity<ProductResponseDto> create(@RequestBody @Valid ProductRequestDto product) {
         Product productEntity = productService.create(new Product(product));
 
         ProductResponseDto productResponse = ProductResponseDto.fromProduct(productEntity);
@@ -71,7 +72,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> update(@PathVariable UUID id, @RequestBody ProductRequestDto newProduct) {
+    public ResponseEntity<ProductResponseDto> update(@PathVariable UUID id, @RequestBody @Valid ProductRequestDto newProduct) {
         Product newProductEntity = new Product(newProduct);
         newProductEntity.setId(id);
 
