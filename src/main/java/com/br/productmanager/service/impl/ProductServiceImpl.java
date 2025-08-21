@@ -1,6 +1,8 @@
 package com.br.productmanager.service.impl;
 
 import com.br.productmanager.enums.ProductCategory;
+import com.br.productmanager.exception.ProductAlreadyExistsException;
+import com.br.productmanager.exception.ProductNotFoundException;
 import com.br.productmanager.model.entity.Product;
 import com.br.productmanager.repository.ProductRepository;
 import com.br.productmanager.service.ProductService;
@@ -46,11 +48,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product create(Product product) {
+        if (repository.existsProductByName(product.getName())) {
+            throw new ProductAlreadyExistsException("product with name " + product.getName() + " already exists");
+        }
+
         return repository.save(product);
     }
 
     @Override
     public Product update(UUID id, Product newProduct) {
+        if (repository.existsProductByName(newProduct.getName())) {
+            throw new ProductAlreadyExistsException("product with " + newProduct.getName() + " already exists");
+        }
+
         Optional<Product> productOptional = repository.findById(id);
 
         if (productOptional.isEmpty()) {
