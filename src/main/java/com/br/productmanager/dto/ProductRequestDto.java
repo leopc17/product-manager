@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 public record ProductRequestDto (
     @NotBlank(message = "name can't be empty")
-    @Size(max = 150, message = "name size must be less than 150")
+    @Size(max = 150, message = "name size must be less than or equal 150")
     String name,
 
     @PositiveOrZero(message = "price must be greater than zero")
