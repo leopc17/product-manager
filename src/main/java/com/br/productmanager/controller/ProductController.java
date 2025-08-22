@@ -32,7 +32,7 @@ public class ProductController {
 
         ProductResponseDto productResponse = ProductResponseDto.fromProduct(productEntity);
 
-        return ResponseEntity.ok(productResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productResponse);
     }
 
     @GetMapping("/{id}")
