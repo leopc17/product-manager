@@ -39,6 +39,13 @@ public class Product {
         this.category = productResponseDto.category();
     }
 
+    public Product(String name, BigDecimal price, String description, ProductCategory category) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.category = category;
+    }
+
     public UUID getId() {
         return id;
     }
