@@ -1,5 +1,7 @@
-package com.br.productmanager.exception;
+package com.br.productmanager.exception.handler;
 
+import com.br.productmanager.exception.ProductAlreadyExistsException;
+import com.br.productmanager.exception.ProductNotFoundException;
 import com.br.productmanager.exception.apierror.ApiError;
 
 import org.springframework.dao.DataIntegrityViolationException;
