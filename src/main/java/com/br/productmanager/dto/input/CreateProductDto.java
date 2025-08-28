@@ -1,11 +1,12 @@
-package com.br.productmanager.dto;
+package com.br.productmanager.dto.input;
 
 import com.br.productmanager.enums.ProductCategory;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-public record ProductRequestDto (
+public record CreateProductDto (
+
     @NotBlank(message = "name can't be empty")
     @Size(max = 150, message = "name size must be less than or equal 150")
     String name,

@@ -1,7 +1,7 @@
 package com.br.productmanager.controller;
 
-import com.br.productmanager.dto.ProductRequestDto;
-import com.br.productmanager.dto.ProductResponseDto;
+import com.br.productmanager.dto.input.CreateProductDto;
+import com.br.productmanager.dto.output.ProductRecoveryDto;
 import com.br.productmanager.enums.ProductCategory;
 import com.br.productmanager.model.entity.Product;
 import com.br.productmanager.service.impl.ProductServiceImpl;
@@ -27,30 +27,30 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> create(@RequestBody @Valid ProductRequestDto product) {
+    public ResponseEntity<ProductRecoveryDto> create(@RequestBody @Valid CreateProductDto product) {
         Product productEntity = productService.create(new Product(product));
 
-        ProductResponseDto productResponse = ProductResponseDto.fromProduct(productEntity);
+        ProductRecoveryDto productResponse = ProductRecoveryDto.fromProduct(productEntity);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(productResponse);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> find(@PathVariable UUID id) {
+    public ResponseEntity<ProductRecoveryDto> find(@PathVariable UUID id) {
         Product productEntity = productService.findById(id);
 
-        ProductResponseDto productResponse = ProductResponseDto.fromProduct(productEntity);
+        ProductRecoveryDto productResponse = ProductRecoveryDto.fromProduct(productEntity);
 
         return ResponseEntity.ok(productResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> find() {
+    public ResponseEntity<List<ProductRecoveryDto>> find() {
         List<Product> productsEntity = productService.findAll();
 
-        List<ProductResponseDto> productsResponse = new ArrayList<>();
+        List<ProductRecoveryDto> productsResponse = new ArrayList<>();
         for (Product p : productsEntity) {
-            ProductResponseDto pr = ProductResponseDto.fromProduct(p);
+            ProductRecoveryDto pr = ProductRecoveryDto.fromProduct(p);
             productsResponse.add(pr);
         }
 
@@ -58,13 +58,13 @@ public class ProductController {
     }
 
     @GetMapping("/categories/{category}")
-    public ResponseEntity<List<ProductResponseDto>> find(@PathVariable String category) {
+    public ResponseEntity<List<ProductRecoveryDto>> find(@PathVariable String category) {
         ProductCategory enumCategory = ProductCategory.valueOf(category.toUpperCase());
         List<Product> productsEntity = productService.findAllByCategory(enumCategory);
 
-        List<ProductResponseDto> productsResponse = new ArrayList<>();
+        List<ProductRecoveryDto> productsResponse = new ArrayList<>();
         for (Product p : productsEntity) {
-            ProductResponseDto pr = ProductResponseDto.fromProduct(p);
+            ProductRecoveryDto pr = ProductRecoveryDto.fromProduct(p);
             productsResponse.add(pr);
         }
 
@@ -72,13 +72,13 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> update(@PathVariable UUID id, @RequestBody @Valid ProductRequestDto newProduct) {
+    public ResponseEntity<ProductRecoveryDto> update(@PathVariable UUID id, @RequestBody @Valid CreateProductDto newProduct) {
         Product newProductEntity = new Product(newProduct);
         newProductEntity.setId(id);
 
         Product productEntity = productService.update(id, newProductEntity);
 
-        ProductResponseDto productResponse = ProductResponseDto.fromProduct(productEntity);
+        ProductRecoveryDto productResponse = ProductRecoveryDto.fromProduct(productEntity);
 
         return ResponseEntity.status(HttpStatus.OK).body(productResponse);
     }
