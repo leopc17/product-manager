@@ -1,39 +1,66 @@
 package com.br.productmanager.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.br.productmanager.exception.apierror.ApiError;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.List;
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGenericException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    public ResponseEntity<Object> handleGenericException(Exception ex) {
+        ApiError apiErrorResponse = new ApiError(INTERNAL_SERVER_ERROR, ex);
+        apiErrorResponse.setDebugMessage(ex.getLocalizedMessage());
+        return buildResponseEntity(apiErrorResponse);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        List<String> errorList = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .toList();
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ApiError apiErrorResponse = new ApiError(BAD_REQUEST, "Malformed JSON request", ex);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
+        return buildResponseEntity(apiErrorResponse);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ApiError apiErrorResponse = new ApiError(BAD_REQUEST, "Validation error");
+        apiErrorResponse.setDebugMessage(ex.getLocalizedMessage());
+        apiErrorResponse.addValidationErrors(ex.getBindingResult().getFieldErrors());
+        apiErrorResponse.addValidationError(ex.getBindingResult().getGlobalErrors());
+        return buildResponseEntity(apiErrorResponse);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    protected ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex, WebRequest request) {
+        ApiError apiErrorResponse = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Database error", ex);
+
+        return buildResponseEntity(apiErrorResponse);
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<Object> handleProductNotFoundException(ProductNotFoundException ex) {
+        ApiError apiErrorResponse = new ApiError(NOT_FOUND, ex.getLocalizedMessage());
+
+        return buildResponseEntity(apiErrorResponse);
     }
 
     @ExceptionHandler(ProductAlreadyExistsException.class)
-    public ResponseEntity<String> ProductAlreadyExistsException(ProductNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    public ResponseEntity<Object> handleProductAlreadyExistsException(ProductAlreadyExistsException ex) {
+        ApiError apiErrorResponse = new ApiError(CONFLICT, ex.getLocalizedMessage());
+
+        return buildResponseEntity(apiErrorResponse);
+    }
+
+    private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
+        return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 }
