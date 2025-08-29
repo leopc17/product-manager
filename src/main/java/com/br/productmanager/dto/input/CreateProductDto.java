@@ -1,5 +1,7 @@
 package com.br.productmanager.dto.input;
 
+import com.br.productmanager.enums.ProductCategory;
+import com.br.productmanager.validation.annotation.EnumValue;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
@@ -17,6 +19,7 @@ public record CreateProductDto (
     String description,
 
     @NotNull(message = "{not.null.message}")
+    @EnumValue(enumClass = ProductCategory.class, message = "{enum.value.message}")
     String category
 
 ) {}
