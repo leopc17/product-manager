@@ -29,7 +29,7 @@ public class Product {
         this.name = createProductDto.name();
         this.price = createProductDto.price();
         this.description = createProductDto.description();
-        this.category = createProductDto.category();
+        this.category = ProductCategory.valueOf(createProductDto.category());
     }
 
     public Product(ProductRecoveryDto productRecoveryDto) {
