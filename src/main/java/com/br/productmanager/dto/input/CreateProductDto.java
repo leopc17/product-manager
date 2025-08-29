@@ -1,6 +1,5 @@
 package com.br.productmanager.dto.input;
 
-import com.br.productmanager.enums.ProductCategory;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
@@ -18,6 +17,6 @@ public record CreateProductDto (
     String description,
 
     @NotNull(message = "{not.null.message}")
-    ProductCategory category
+    String category
 
 ) {}
