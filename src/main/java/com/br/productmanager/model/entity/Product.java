@@ -25,18 +25,18 @@ public class Product {
 
     }
 
-    public Product(CreateProductDto productRequestDto) {
-        this.name = productRequestDto.name();
-        this.price = productRequestDto.price();
-        this.description = productRequestDto.description();
-        this.category = productRequestDto.category();
+    public Product(CreateProductDto createProductDto) {
+        this.name = createProductDto.name();
+        this.price = createProductDto.price();
+        this.description = createProductDto.description();
+        this.category = createProductDto.category();
     }
 
-    public Product(ProductRecoveryDto productResponseDto) {
-        this.name = productResponseDto.name();
-        this.price = productResponseDto.price();
-        this.description = productResponseDto.description();
-        this.category = productResponseDto.category();
+    public Product(ProductRecoveryDto productRecoveryDto) {
+        this.name = productRecoveryDto.name();
+        this.price = productRecoveryDto.price();
+        this.description = productRecoveryDto.description();
+        this.category = productRecoveryDto.category();
     }
 
     public Product(String name, BigDecimal price, String description, ProductCategory category) {
