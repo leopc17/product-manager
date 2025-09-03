@@ -1,6 +1,7 @@
 package com.br.productmanager.model.entity;
 
 import com.br.productmanager.dto.input.CreateProductDto;
+import com.br.productmanager.dto.input.UpdateProductDto;
 import com.br.productmanager.dto.output.ProductRecoveryDto;
 import com.br.productmanager.enums.ProductCategory;
 import jakarta.persistence.*;
@@ -30,6 +31,13 @@ public class Product {
         this.price = createProductDto.price();
         this.description = createProductDto.description();
         this.category = ProductCategory.valueOf(createProductDto.category());
+    }
+
+    public Product(UpdateProductDto updateProductDto) {
+        this.name = updateProductDto.name();
+        this.price = updateProductDto.price();
+        this.description = updateProductDto.description();
+        this.category = ProductCategory.valueOf(updateProductDto.category());
     }
 
     public Product(ProductRecoveryDto productRecoveryDto) {
