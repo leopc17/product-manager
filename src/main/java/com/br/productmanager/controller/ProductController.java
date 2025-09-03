@@ -1,6 +1,7 @@
 package com.br.productmanager.controller;
 
 import com.br.productmanager.dto.input.CreateProductDto;
+import com.br.productmanager.dto.input.UpdateProductDto;
 import com.br.productmanager.dto.output.ProductRecoveryDto;
 import com.br.productmanager.enums.ProductCategory;
 import com.br.productmanager.model.entity.Product;
@@ -72,7 +73,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductRecoveryDto> update(@PathVariable UUID id, @RequestBody @Valid CreateProductDto newProduct) {
+    public ResponseEntity<ProductRecoveryDto> update(@PathVariable UUID id, @RequestBody @Valid UpdateProductDto newProduct) {
         Product newProductEntity = new Product(newProduct);
         newProductEntity.setId(id);
 
